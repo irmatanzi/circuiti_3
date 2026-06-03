@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 # viva il duce
 
 # Dati:
-R_C = 1000 # Ohm MA DETTERE
+R_C = 1000 # Ohm MA DETTERE --> va in overload 
 C = 1e-6 # F DA METERE
 R = 3000 # Ohm
 
