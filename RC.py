@@ -2,51 +2,67 @@ import numpy as np
 import matplotlib.pyplot as plt
 from iminuit import Minuit
 from iminuit.cost import LeastSquares
+from scipy.stats import chi2
+
+# raga nei grafici, vi piace di più "V_out" e "V_in" o "V_C" e "V_g"?
 
 
-def H_C(f, C):
+def H_C(f, R, C):
     omega = 2 * np.pi * f
-    return 1 / np.sqrt(1 + (omega * R_load * C)**2)
+    return 1 / np.sqrt(1 + (omega * R * C)**2)
 
 
-def H_R(f, C):
+def H_R(f, R, C):
     omega = 2 * np.pi * f
-    return (omega * R_load * C) / np.sqrt(1 + (omega * R_load * C)**2)
+    return (omega * R * C) / np.sqrt(1 + (omega * R * C)**2)
 
 
-def fase_C(f, C):
+def fase_C(f, R, C):
     omega = 2 * np.pi * f
-    return -np.arctan(omega * R_load * C)
+    return -np.arctan(omega * R * C)
 
 
-def fase_R(f, C):
+def fase_R(f, R, C):
     omega = 2 * np.pi * f
-    return np.pi / 2 - np.arctan(omega * R_load * C)
+    return np.pi / 2 - np.arctan(omega * R * C)
 
 
 # Dati:
 
-R_load = 3000 # Ohm
+R_load = 3000.2 # Ohm
 # R_C ignota (multimetro in overload)
 C_start = 1e-9 # F, solo valore iniziale per il fit
 
+# Incertezze di tipo B: distribuzione uniforme nell'intervallo dichiarato.
+sigma_R_load = 0.01 * R_load / np.sqrt(3) # Ohm, tolleranza produttore: +/- 1%
+
+# Incertezze di risoluzione: distribuzione uniforme sull'ultima cifra.
+sigma_V_risoluzione = 0.001 / np.sqrt(12) # V, ultima cifra letta = 0.001 V
+sigma_frequenza = 1 / np.sqrt(12) # Hz, ultima cifra letta = 1 Hz
+
 frequenza = np.array([  200.,   500.,  1000.,  2000.,  5000.,  7000., 10000.]) # Hz
 
-V_A = np.array([10.017, 10.039, 10.035,  9.999,  9.966, 10.022,  9.965]) # V, segnale in ingresso
-V_B = np.array([10.02 , 10.005, 10.038,  9.971,  9.959,  9.876,  9.794]) # V, tensione sul condensatore: passa basso
-V_AB = np.array([0.008, 0.041, 0.246, 0.474, 1.056, 1.507, 2.24 ]) # V, tensione sulla resistenza: passa alto
+V_A = np.array([10.008, 10.019, 10.018, 10.   ,  9.983, 10.011,  9.983]) # V, segnale in ingresso
+V_B = np.array([10.01 , 10.002, 10.018,  9.981,  9.948,  9.876,  9.774]) # V, tensione sul condensatore: passa basso
+V_AB = np.array([0.026, 0.077, 0.236, 0.463, 1.09 , 1.535, 2.223]) # V, tensione sulla resistenza: passa alto
 
 sigma_V_A = np.array([0.032, 0.028, 0.032, 0.038, 0.063, 0.027, 0.017])
 sigma_V_B = np.array([0.017, 0.043, 0.026, 0.029, 0.048, 0.09 , 0.07 ])
 sigma_V_AB = np.array([0.043, 0.042, 0.008, 0.038, 0.022, 0.048, 0.003])
 
-phi_A = np.array([-1.581, -0.712,  0.247, -5.661, -0.475, -1.302,  2.044]) * 1e-6 # secondi
-phi_B = np.array([ -7.234,  -1.747,  -1.   , -11.155,  -2.094,   0.288,   0.487]) * 1e-6 # secondi
-phi_AB = np.array([1246.141,  494.794,  248.88 ,  121.465,   48.02 ,   33.712,   20.169]) * 1e-6 # secondi
+phi_A = np.array([-0.079, -0.036,  0.012, -0.283, -0.024, -0.065,  0.102]) * 1e-6 # secondi
+phi_B = np.array([-3.782, -3.507, -3.469, -3.975, -3.51 , -3.377, -3.339]) * 1e-6 # secondi
+phi_AB = np.array([1246.387,  496.32 ,  246.525,  121.406,   46.495,   32.222,   21.395]) * 1e-6 # secondi
 
-sigma_phi_A = np.array([1.16 , 0.533, 3.15 , 1.834, 2.787, 3.628, 0.786])* 1e-6 # secondi
-sigma_phi_B = np.array([2.27 , 2.387, 4.045, 1.63 , 0.797, 3.2  , 2.211])* 1e-6 # secondi
-sigma_phi_AB = np.array([2.017, 2.664, 0.916, 0.121, 4.425, 1.715, 1.499])* 1e-6 # secondi
+sigma_phi_A = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+sigma_phi_B = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+sigma_phi_AB = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+
+
+sigma_V_A = np.sqrt(sigma_V_A**2 + sigma_V_risoluzione**2)
+sigma_V_B = np.sqrt(sigma_V_B**2 + sigma_V_risoluzione**2)
+sigma_V_AB = np.sqrt(sigma_V_AB**2 + sigma_V_risoluzione**2)
+
 
 # V_A è il segnale in entrata.
 # V_B è la tensione sul condensatore: passa basso.
@@ -67,64 +83,258 @@ sigma_y_R = y_R * np.sqrt(
 fase_A_B = (phi_B - phi_A) * 2 * np.pi * frequenza
 fase_A_AB = (phi_AB - phi_A) * 2 * np.pi * frequenza
 
+delta_phi_A_B = phi_B - phi_A
+delta_phi_A_AB = phi_AB - phi_A
+
 sigma_fase_A_B = (
-    2*np.pi*frequenza
-    * np.sqrt(sigma_phi_A**2 + sigma_phi_B**2)
+    2*np.pi
+    * np.sqrt(
+        (frequenza**2) * (sigma_phi_A**2 + sigma_phi_B**2)
+        + (delta_phi_A_B**2) * sigma_frequenza**2
+    )
 )
 
 sigma_fase_A_AB = (
-    2*np.pi*frequenza
-    * np.sqrt(sigma_phi_A**2 + sigma_phi_AB**2)
+    2*np.pi
+    * np.sqrt(
+        (frequenza**2) * (sigma_phi_A**2 + sigma_phi_AB**2)
+        + (delta_phi_A_AB**2) * sigma_frequenza**2
+    )
 )
 
 ls_C = LeastSquares(frequenza, y_C, sigma_y_C, H_C)
 ls_R = LeastSquares(frequenza, y_R, sigma_y_R, H_R)
 
-m_C = Minuit(ls_C, C=C_start)
+
+def costo_con_vincolo_R(ls):
+    def costo(R, C):
+        return ls(R, C) + ((R - R_load) / sigma_R_load)**2
+    return costo
+
+
+def frequenza_taglio(R, C):
+    return 1 / (2 * np.pi * R * C)
+
+
+def errore_frequenza_taglio(m):
+    R_fit = m.values["R"]
+    C_fit = m.values["C"]
+    f_c = frequenza_taglio(R_fit, C_fit)
+    cov = m.covariance
+
+    df_dR = -f_c / R_fit
+    df_dC = -f_c / C_fit
+    var_f_c = (
+        df_dR**2 * cov["R", "R"]
+        + df_dC**2 * cov["C", "C"]
+        + 2 * df_dR * df_dC * cov["R", "C"]
+    )
+    return np.sqrt(var_f_c)
+
+
+m_C = Minuit(costo_con_vincolo_R(ls_C), R=R_load, C=C_start)
+m_C.errordef = Minuit.LEAST_SQUARES
+m_C.limits["R"] = (1e-9, None)
 m_C.limits["C"] = (1e-10, 1e-3)
 m_C.migrad()
 m_C.hesse()
 
-m_R = Minuit(ls_R, C=C_start)
+ndof_C = len(frequenza) + 1 - 2
+p_C = chi2.sf(m_C.fval, ndof_C)
+
+m_R = Minuit(costo_con_vincolo_R(ls_R), R=R_load, C=C_start)
+m_R.errordef = Minuit.LEAST_SQUARES
+m_R.limits["R"] = (1e-9, None)
 m_R.limits["C"] = (1e-10, 1e-3)
 m_R.migrad()
 m_R.hesse()
 
+p_R = chi2.sf(m_R.fval, ndof_C)
+
+R_fit_C = m_C.values["R"]
+R_err_C = m_C.errors["R"]
 C_fit_C = m_C.values["C"]
 C_err_C = m_C.errors["C"]
+R_fit_R = m_R.values["R"]
+R_err_R = m_R.errors["R"]
 C_fit_R = m_R.values["C"]
 C_err_R = m_R.errors["C"]
+f_c_fit_C = frequenza_taglio(R_fit_C, C_fit_C)
+f_c_err_C = errore_frequenza_taglio(m_C)
+f_c_fit_R = frequenza_taglio(R_fit_R, C_fit_R)
+f_c_err_R = errore_frequenza_taglio(m_R)
 
 print(m_C)
 print(m_R)
+print(f"\nR_load = {R_load:.3f} ± {sigma_R_load:.3f} Ohm")
+
 print(f"\nFit su V_B / V_A, condensatore:")
+print(f"R = {R_fit_C:.3f} ± {R_err_C:.3f} Ohm")
 print(f"C = {C_fit_C:.3e} ± {C_err_C:.3e} F")
-print(f"tau = R*C = {R_load*C_fit_C:.3e} s")
-print(f"f_c = {1/(2*np.pi*R_load*C_fit_C):.1f} Hz")
+print(f"tau = R*C = {R_fit_C*C_fit_C:.3e} s")
+print(f"f_c = 1/(2*pi*R*C) = {f_c_fit_C:.1f} ± {f_c_err_C:.1f} Hz")
+print(f"Chi quadro: {m_C.fval}, Ndof: {ndof_C}, p-value: {p_C}")
 
 print(f"\nFit su V_AB / V_A, resistenza:")
+print(f"R = {R_fit_R:.3f} ± {R_err_R:.3f} Ohm")
 print(f"C = {C_fit_R:.3e} ± {C_err_R:.3e} F")
-print(f"tau = R*C = {R_load*C_fit_R:.3e} s")
-print(f"f_c = {1/(2*np.pi*R_load*C_fit_R):.1f} Hz")
+print(f"tau = R*C = {R_fit_R*C_fit_R:.3e} s")
+print(f"f_c = 1/(2*pi*R*C) = {f_c_fit_R:.1f} ± {f_c_err_R:.1f} Hz")
+print(f"Chi quadro: {m_R.fval}, Ndof: {ndof_C}, p-value: {p_R}")
 
 fig, ax = plt.subplots(2, 1, sharex=True)
 x_axis = np.linspace(np.min(frequenza), np.max(frequenza), 1000)
 
-ax[0].errorbar(frequenza, y_C, yerr=sigma_y_C, fmt="o", capsize = 4, color="hotpink", label="V_B / V_A")
-ax[0].plot(x_axis, H_C(x_axis, C_fit_C), color="hotpink",
-           label=f"fit C: C={C_fit_C:.2e} F")
-ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="lightblue", label="V_AB / V_A")
-ax[0].plot(x_axis, H_R(x_axis, C_fit_R), color="lightblue",
-           label=f"fit R: C={C_fit_R:.2e} F")
-ax[0].set_ylabel("Rapporto di ampiezza")
+ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_xlabel ("Frequenza (Hz)")
+ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
+
+ax[0].errorbar (frequenza, y_C, yerr=sigma_y_C, fmt="o", capsize = 4, color="hotpink", label="Dati osservati (condensatore)")
+ax[0].plot(x_axis, H_C(x_axis, R_fit_C, C_fit_C), color="hotpink",
+           label="Funzione di trasferimento $H_C$")
+ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="lightblue", label="Dati osservati (resistenza)")
+ax[0].plot(x_axis, H_R(x_axis, R_fit_R, C_fit_R), color="lightblue",
+           label="Funzione di trasferimento $H_R$")
 ax[0].legend()
+ax[0].grid(True, alpha = 0.4)
 
-ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, color="hotpink", label="fase V_B - V_A")
-ax[1].plot(x_axis, fase_C(x_axis, C_fit_C), color="hotpink")
-ax[1].errorbar(frequenza, fase_A_AB, yerr=sigma_fase_A_AB, fmt="o", capsize = 4, color="lightblue", label="fase V_AB - V_A")
-ax[1].plot(x_axis, fase_R(x_axis, C_fit_R), color="lightblue")
+ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
 ax[1].set_xlabel("Frequenza (Hz)")
-ax[1].set_ylabel("Fase (rad)")
-ax[1].legend()
+ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
+ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, 
+               color="hotpink", label="Dati osservati (condensatore)")
+ax[1].plot(x_axis, fase_C(x_axis, R_fit_C, C_fit_C), color="hotpink",
+           label="Fase teorica")
+ax[1].errorbar(frequenza, fase_A_AB, yerr=sigma_fase_A_AB, fmt="o", capsize = 4, 
+               color="lightblue", label="Dati osservati (resistenza)")
+ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, C_fit_R), color="lightblue",
+           label="Fase teorica")
+
+ax[1].legend()
+ax[1].grid(True, alpha = 0.4)
+
+plt.show()
+
+# grafico logaritmico
+
+fig, ax = plt.subplots (2,1)
+
+ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_xlabel ("Frequenza (Hz)")
+ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
+
+ax[0].errorbar (frequenza, y_C, yerr=sigma_y_C, fmt="o", capsize = 4, color="hotpink", label="Dati osservati (condensatore)")
+ax[0].plot(x_axis, H_C(x_axis, R_fit_C, C_fit_C), color="hotpink",
+           label="Funzione di trasferimento $H_C$")
+ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="lightblue", label="Dati osservati (resistenza)")
+ax[0].plot(x_axis, H_R(x_axis, R_fit_R, C_fit_R), color="lightblue",
+           label="Funzione di trasferimento $H_R$")
+
+ax[0].set_xscale('log')
+ax[0].legend()
+ax[0].grid(True, alpha = 0.4)
+
+ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
+ax[1].set_xlabel("Frequenza (Hz)")
+ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
+
+ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, 
+               color="hotpink", label="Dati osservati (condensatore)")
+ax[1].plot(x_axis, fase_C(x_axis, R_fit_C, C_fit_C), color="hotpink")
+ax[1].errorbar(frequenza, fase_A_AB, yerr=sigma_fase_A_AB, fmt="o", capsize = 4, 
+               color="lightblue", label="Dati osservati (resistenza)")
+ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, C_fit_R), color="lightblue")
+
+ax[1].set_xscale ('log')
+ax[1].legend()
+ax[1].grid(True, alpha = 0.4)
+
+plt.show ()
+
+# CALCOLO DELLE IMPEDENZE
+
+# Usiamo i parametri dal fit sul condensatore (puoi usare anche m_R, sono compatibili)
+R_best = R_fit_C
+C_best = C_fit_C
+R_err  = R_err_C
+C_err  = C_err_C
+ 
+# Frequenza di taglio dai due fit, con propagazione da matrice di covarianza.
+f_c_C = f_c_fit_C
+sigma_fc_C = f_c_err_C
+f_c_R = f_c_fit_R
+sigma_fc_R = f_c_err_R
+ 
+print(f"\n--- Frequenze di taglio ---")
+print(f"Dal fit sul condensatore: f_c = {f_c_C:.1f} ± {sigma_fc_C:.1f} Hz")
+print(f"Dal fit sulla resistenza: f_c = {f_c_R:.1f} ± {sigma_fc_R:.1f} Hz")
+compatibilita = abs(f_c_C - f_c_R) / np.sqrt(sigma_fc_C**2 + sigma_fc_R**2)
+print(f"Compatibilità tra i due fit: {compatibilita:.2f} sigma")
+ 
+# Asse delle frequenze esteso (log) per un bel grafico
+x_log = np.logspace(np.log10(100), np.log10(50000), 2000)
+ 
+# Impedenze teoriche dai parametri fittati
+Z_R_teorica = np.full_like(x_log, R_best)          # costante
+Z_C_teorica = 1 / (2 * np.pi * x_log * C_best)     # ~ 1/f
+ 
+# Propagazione incertezza su Z_C: sigma_ZC / ZC = sigma_C / C
+sigma_Z_C_teorica = Z_C_teorica * (C_err / C_best)
+ 
+# Impedenze "sperimentali" stimate dai dati misurati:
+#   Dal partitore di tensione:  H_C = Z_C / (Z_R + Z_C)  =>  Z_C / Z_R = H_C / (1 - H_C)  ... però
+#   più diretto: Z_C = R * (V_B / V_AB), perché V_B/V_A = H_C e V_AB/V_A = H_R
+#   quindi Z_C / Z_R = H_C / H_R = (V_B / V_AB)
+Z_ratio_dati = y_C / y_R   # = Z_C / Z_R sperimentale
+Z_C_dati = Z_ratio_dati * R_load  # Ohm (usiamo R_load come riferimento)
+ 
+# Propagazione incertezza su Z_C_dati
+sigma_Z_ratio = Z_ratio_dati * np.sqrt(
+    (sigma_y_C / y_C)**2 + (sigma_y_R / y_R)**2
+)
+sigma_Z_C_dati = np.sqrt(
+    (R_load * sigma_Z_ratio)**2 + (Z_ratio_dati * sigma_R_load)**2
+)
+
+# Il primo punto (200 Hz) ha V_AB molto piccola e quindi errore relativo > 100%.
+# Lo escludiamo solo dal grafico delle impedenze, non dai fit precedenti.
+maschera_impedenze = frequenza != 200
+ 
+# --- Plot ---
+fig, ax = plt.subplots(figsize=(8, 5))
+ 
+ax.loglog(x_log, Z_R_teorica, color="lightblue",  lw=2, label=f"$Z_R$ teorica (fit), $R$ = {R_best:.0f} Ω")
+ax.loglog(x_log, Z_C_teorica, color="hotpink",    lw=2, label=f"$Z_C$ teorica (fit), $C$ = {C_best:.2e} F")
+ax.fill_between(x_log,
+                Z_C_teorica - sigma_Z_C_teorica,
+                Z_C_teorica + sigma_Z_C_teorica,
+                color="hotpink", alpha=0.1, label="Banda $\\pm 1\\sigma$ su $Z_C$")
+ 
+ax.errorbar(frequenza[maschera_impedenze],
+            Z_C_dati[maschera_impedenze],
+            yerr=sigma_Z_C_dati[maschera_impedenze],
+            fmt="o", capsize=4, color="darkred",
+            label="$Z_C$ stimata dai dati ($R \\cdot V_C / V_{R}$)")
+ 
+# Linea verticale sulla frequenza di taglio (media pesata dei due fit)
+w_C = 1 / sigma_fc_C**2
+w_R = 1 / sigma_fc_R**2
+f_c_media = (w_C * f_c_C + w_R * f_c_R) / (w_C + w_R)
+sigma_fc_media = 1 / np.sqrt(w_C + w_R)
+ 
+ax.axvline(f_c_media, color="navy", lw=1.5, ls="--",
+           label=f"$f_c$ = {f_c_media:.0f} Hz")
+ 
+# Punto di incrocio: Z_R = Z_C  =>  f = 1/(2*pi*R*C), cioè esattamente f_c
+ax.plot(f_c_media, R_best, marker="*", markersize=9, color="gold",
+        zorder=5, label=f"Incrocio $Z_R = Z_C$ a $f_c$")
+ 
+ax.set_xlabel("Frequenza (Hz)")
+ax.set_ylabel("Impedenza (Ω)")
+ax.set_title("Impedenze $Z_R$ e $Z_C$ in funzione della frequenza")
+ax.legend(fontsize=9)
+ax.grid(True, which="both", alpha=0.2)
+ 
+plt.tight_layout()
 plt.show()

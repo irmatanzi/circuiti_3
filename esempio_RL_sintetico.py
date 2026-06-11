@@ -10,8 +10,8 @@ dati = genera_dati_rl(
     R=58.3,
     L=10e-3,
     V_in=10.0,
-    sigma_V=0.08,
-    sigma_t=4e-6,
+    sigma_V=0.04,
+    sigma_t=2e-7,
     n_misure=3,
     seed=7,
 )

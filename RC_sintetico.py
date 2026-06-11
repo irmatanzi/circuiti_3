@@ -22,7 +22,8 @@ def fase_R(f, R, C):
 
 
 def rumore_clt(shape, sigma, n_contributi=12, rng=None):
-    """Rumore quasi-gaussiano ottenuto sommando contributi uniformi.
+    """
+    Rumore quasi-gaussiano ottenuto sommando contributi uniformi.
 
     La varianza finale e' circa sigma**2. Aumentare n_contributi rende la
     distribuzione piu' simile a una gaussiana, per il teorema centrale.
@@ -36,7 +37,10 @@ def rumore_clt(shape, sigma, n_contributi=12, rng=None):
 
 def misure_con_errori(valori_veri, sigma_strumento, n_misure=3,
                       n_contributi=12, rng=None):
-    """Simula misure ripetute e restituisce media, errore sulla media e dati grezzi."""
+    """
+    Simula misure ripetute e restituisce media, errore sulla media 
+    e dati grezzi.
+    """
     rng = np.random.default_rng(rng)
     valori_veri = np.asarray(valori_veri)
     letture = []
@@ -57,9 +61,10 @@ def misure_con_errori(valori_veri, sigma_strumento, n_misure=3,
     return media, errore_media, letture
 
 
-def genera_dati_rc(frequenze, R, C, V_in=10.0, sigma_V=0.08,
-                   sigma_t=4e-6, n_misure=3, n_contributi=12, seed=None):
-    """Genera un dataset RC sintetico, da dichiarare come simulato.
+def genera_dati_rc(frequenze, R, C, V_in=10.0, sigma_V=0.04,
+                   sigma_t=2e-7, n_misure=3, n_contributi=12, seed=None):
+    """
+    Genera un dataset RC sintetico, da dichiarare come simulato.
 
     Convenzione:
     - V_A: tensione in ingresso
