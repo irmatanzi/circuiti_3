@@ -122,6 +122,7 @@ ax[0].plot(x_axis, H_R(x_axis, R_tot, L_fit_R), color="lightblue", label=f"fit R
 
 ax[0].set_ylabel("Rapporto di ampiezza")
 ax[0].legend()
+ax[0].grid (True)
 
 ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, color="hotpink", label="fase V_B - V_A")
 ax[1].plot(x_axis, fase_L(x_axis, R_tot, L_fit_L), color="hotpink")
@@ -132,7 +133,7 @@ ax[1].plot(x_axis, fase_R(x_axis, R_tot, L_fit_R), color="lightblue")
 ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("Fase (rad)")
 ax[1].legend()
-
+ax[1].grid (True)
 plt.show ()
 
 # Grafico aggiuntivo: stessa cosa ma con scala logaritmica sull'asse x
@@ -148,7 +149,7 @@ ax_log[0].plot(x_axis_log, H_R(x_axis_log, R_tot, L_fit_R), color="lightblue", l
 
 ax_log[0].set_ylabel("Rapporto di ampiezza")
 ax_log[0].legend()
-
+ax_log[0].grid(True)
 ax_log[1].set_xscale('log')
 ax_log[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize=4, color="hotpink", label="fase V_B - V_A")
 ax_log[1].plot(x_axis_log, fase_L(x_axis_log, R_tot, L_fit_L), color="hotpink")
@@ -159,5 +160,6 @@ ax_log[1].plot(x_axis_log, fase_R(x_axis_log, R_tot, L_fit_R), color="lightblue"
 ax_log[1].set_xlabel("Frequenza (Hz)")
 ax_log[1].set_ylabel("Fase (rad)")
 ax_log[1].legend()
+ax_log[1].grid(True)
 
 plt.show ()
