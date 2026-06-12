@@ -50,11 +50,11 @@ V_B = np.array([ 9.968,  9.995, 10.028,  9.899,  9.934,  9.895,  9.798,  9.041, 
 V_AB = np.array([0.119, 0.13 , 0.188, 0.486, 1.181, 1.521, 2.187, 4.031, 5.527, 6.787,
  7.497, 8.01 ]) # V, tensione sulla resistenza: passa alto
 
-sigma_V_A = np.array([0.065, 0.017, 0.052, 0.042, 0.031, 0.037, 0.034, 0.087, 0.008, 0.045,
+sigma_V_A = np.array([0.065, 0.037, 0.052, 0.042, 0.031, 0.037, 0.034, 0.087, 0.028, 0.045,
  0.032, 0.043])
-sigma_V_B = np.array([0.021, 0.046, 0.044, 0.026, 0.039, 0.008, 0.045, 0.103, 0.098, 0.028,
- 0.027, 0.06 ])
-sigma_V_AB = np.array([0.056, 0.109, 0.042, 0.009, 0.089, 0.055, 0.07 , 0.064, 0.044, 0.07 ,
+sigma_V_B = np.array([0.041, 0.056, 0.054, 0.046, 0.039, 0.038, 0.065, 0.103, 0.098, 0.038,
+ 0.047, 0.06 ])
+sigma_V_AB = np.array([0.056, 0.109, 0.042, 0.049, 0.089, 0.055, 0.07 , 0.064, 0.044, 0.07 ,
  0.023, 0.072])
 
 phi_A = np.array([ 0.101,  0.012,  0.001, -0.214, -0.173,  0.084,  0.067,  0.036, -0.14 ,
@@ -196,7 +196,7 @@ print(f"Chi quadro: {m_R.fval}, Ndof: {ndof_C}, p-value: {p_R}")
 fig, ax = plt.subplots(2, 1, sharex=True)
 x_axis = np.linspace(np.min(frequenza), np.max(frequenza), 1000)
 
-ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala lineare")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
@@ -209,7 +209,7 @@ ax[0].plot(x_axis, H_R(x_axis, R_fit_R, C_fit_R), color="lightblue",
 ax[0].legend()
 ax[0].grid(True, alpha = 0.4)
 
-ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
+ax[1].set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala lineare")
 ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
@@ -225,13 +225,14 @@ ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, C_fit_R), color="lightblue",
 ax[1].legend()
 ax[1].grid(True, alpha = 0.4)
 
+plt.tight_layout()
 plt.show()
 
 # grafico logaritmico
 
 fig, ax = plt.subplots (2,1)
 
-ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala logaritmica")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
@@ -246,7 +247,7 @@ ax[0].set_xscale('log')
 ax[0].legend()
 ax[0].grid(True, alpha = 0.4)
 
-ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
+ax[1].set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala logaritmica")
 ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
@@ -345,7 +346,7 @@ ax.plot(f_c_media, R_best, marker="*", markersize=10, color="gold",
 ax.set_xlabel("Frequenza (Hz)")
 ax.set_ylabel("Impedenza (Ω)")
 ax.set_title("Impedenze $Z_R$ e $Z_C$ in funzione della frequenza")
-ax.legend(fontsize=9)
+ax.legend(fontsize=10)
 ax.grid(True, which="both", alpha=0.2)
  
 plt.tight_layout()

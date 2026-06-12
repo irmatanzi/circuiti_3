@@ -76,17 +76,17 @@ V_C = np.array([10.678, 11.068, 11.608, 12.277, 13.217, 14.503, 16.164, 44.325, 
   3.86 ,  1.095,  0.545]) # V, ai capi di C
 
 
-sigma_V_A = np.array([0.026, 0.007, 0.021, 0.017, 0.012, 0.015, 0.014, 0.035, 0.003, 0.018,
+sigma_V_A = np.array([0.026, 0.027, 0.031, 0.017, 0.012, 0.025, 0.024, 0.035, 0.013, 0.018,
  0.013, 0.017])
 
-sigma_V_R = np.array([0.008, 0.019, 0.018, 0.01 , 0.015, 0.003, 0.018, 0.041, 0.039, 0.011,
- 0.011, 0.024])
+sigma_V_R = np.array([0.028, 0.019, 0.018, 0.02 , 0.015, 0.003, 0.018, 0.041, 0.039, 0.021,
+ 0.021, 0.024])
 
-sigma_V_L = np.array([0.022, 0.044, 0.017, 0.004, 0.036, 0.022, 0.028, 0.025, 0.018, 0.028,
- 0.009, 0.029])
+sigma_V_L = np.array([0.022, 0.044, 0.017, 0.014, 0.036, 0.022, 0.028, 0.025, 0.018, 0.028,
+ 0.019, 0.029])
 
-sigma_V_C = np.array([0.018, 0.016, 0.01 , 0.016, 0.02 , 0.019, 0.02 , 0.03 , 0.03 , 0.009,
- 0.027, 0.015])
+sigma_V_C = np.array([0.028, 0.026, 0.02 , 0.026, 0.03 , 0.029, 0.03 , 0.04 , 0.04 , 0.029,
+ 0.037, 0.025])
 
 
 phi_A = np.array([ 0.123,  0.21 ,  0.128,  0.208,  0.116, -0.06 , -0.062, -0.098,  0.03 ,
@@ -267,11 +267,13 @@ x_axis = np.linspace(np.min(frequenze), np.max(frequenze), 5000)
 colori = {"R": "lightblue", "L": "mediumseagreen", "C": "hotpink"}
  
 fig, axes = plt.subplots(2, 1, sharex=True, figsize=(9, 7))
-fig.suptitle("Circuito RLC – scala lineare")
  
 ax0, ax1 = axes
 ax0.set_ylabel("$V_{out} / V_{in}$")
 ax0.set_xlabel("Frequenza (Hz)")
+
+ax0.set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala lineare")
+ax1.set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala lineare")
  
 for nome, y, sy, H_func, m, col in [
     ("R", y_R, sigma_y_R, H_R, m_R, colori["R"]),
@@ -311,11 +313,13 @@ plt.show()
 x_log = np.logspace(np.log10(frequenze.min() * 0.8), np.log10(frequenze.max() * 1.2), 5000)
  
 fig, axes = plt.subplots(2, 1, figsize=(9, 7))
-fig.suptitle("Circuito RLC – scala logaritmica")
  
 ax0, ax1 = axes
 ax0.set_ylabel("$V_{out} / V_{in}$")
 ax0.set_xlabel("Frequenza (Hz)")
+
+ax0.set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala logaritmica")
+ax1.set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala logaritmica")
  
 for nome, y, sy, H_func, m, col in [
     ("R", y_R, sigma_y_R, H_R, m_R, colori["R"]),

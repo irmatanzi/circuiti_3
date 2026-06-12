@@ -189,7 +189,7 @@ print (f"Chi quadro: {m_R.fval}, ndof: {ndof_L}, p-value: {p_R}")
 fig, ax = plt.subplots(2, 1, sharex=True)
 x_axis = np.linspace(np.min(frequenza), np.max(frequenza), 1000)
 
-ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala lineare")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
@@ -202,7 +202,7 @@ ax[0].plot(x_axis, H_R(x_axis, R_fit_R, L_fit_R), color="lightblue", label="Funz
 ax[0].legend()
 ax[0].grid (True, alpha = 0.4)
 
-ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
+ax[1].set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala lineare")
 ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
@@ -220,6 +220,8 @@ ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("Fase (rad)")
 ax[1].legend()
 ax[1].grid (True)
+
+plt.tight_layout()
 plt.show ()
 
 
@@ -227,7 +229,7 @@ plt.show ()
 fig, ax = plt.subplots(2, 1, sharex=True)
 
 ax[0].set_xscale('log')
-ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
+ax[0].set_title ("Rapporto delle ampiezze $V_{out} / V_{in}$ - scala logaritmica")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
@@ -241,7 +243,7 @@ ax[0].legend()
 ax[0].grid (True, alpha = 0.4)
 
 ax[1].set_xscale('log')
-ax[1].set_title ("Differenza tra le fasi: $\\Delta \\phi$")
+ax[1].set_title ("Differenza tra le fasi $\\Delta \\phi$ - scala logaritmica")
 ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
