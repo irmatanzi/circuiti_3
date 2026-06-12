@@ -3,7 +3,7 @@ import numpy as np
 from RC_sintetico import genera_dati_rc, stampa_array
 
 
-frequenza = np.array([200, 500, 1000, 2000, 5000, 7000, 10000])
+frequenza = np.array([200, 500, 1000, 2000, 5000, 7000, 10000, 20000, 30000, 40000, 50000, 60000])
 
 dati = genera_dati_rc(
     frequenze=frequenza,

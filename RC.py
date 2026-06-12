@@ -40,23 +40,34 @@ sigma_R_load = 0.01 * R_load / np.sqrt(3) # Ohm, tolleranza produttore: +/- 1%
 sigma_V_risoluzione = 0.001 / np.sqrt(12) # V, ultima cifra letta = 0.001 V
 sigma_frequenza = 1 / np.sqrt(12) # Hz, ultima cifra letta = 1 Hz
 
-frequenza = np.array([  200.,   500.,  1000.,  2000.,  5000.,  7000., 10000.]) # Hz
+frequenza = np.array([  200.,   500.,  1000.,  2000.,  5000.,  7000., 10000., 20000., 30000.,
+ 40000., 50000., 60000.]) # Hz
 
-V_A = np.array([10.008, 10.019, 10.018, 10.   ,  9.983, 10.011,  9.983]) # V, segnale in ingresso
-V_B = np.array([10.01 , 10.002, 10.018,  9.981,  9.948,  9.876,  9.774]) # V, tensione sul condensatore: passa basso
-V_AB = np.array([0.026, 0.077, 0.236, 0.463, 1.09 , 1.535, 2.223]) # V, tensione sulla resistenza: passa alto
+V_A = np.array([ 9.964, 10.038,  9.984, 10.064, 10.027, 10.055,  9.867, 10.023, 10.072,
+  9.989, 10.052,  9.967]) # V, segnale in ingresso
+V_B = np.array([ 9.968,  9.995, 10.028,  9.899,  9.934,  9.895,  9.798,  9.041,  8.238,
+  7.404,  6.714,  5.854]) # V, tensione sul condensatore: passa basso
+V_AB = np.array([0.119, 0.13 , 0.188, 0.486, 1.181, 1.521, 2.187, 4.031, 5.527, 6.787,
+ 7.497, 8.01 ]) # V, tensione sulla resistenza: passa alto
 
-sigma_V_A = np.array([0.032, 0.028, 0.032, 0.038, 0.063, 0.027, 0.017])
-sigma_V_B = np.array([0.017, 0.043, 0.026, 0.029, 0.048, 0.09 , 0.07 ])
-sigma_V_AB = np.array([0.043, 0.042, 0.008, 0.038, 0.022, 0.048, 0.003])
+sigma_V_A = np.array([0.065, 0.017, 0.052, 0.042, 0.031, 0.037, 0.034, 0.087, 0.008, 0.045,
+ 0.032, 0.043])
+sigma_V_B = np.array([0.021, 0.046, 0.044, 0.026, 0.039, 0.008, 0.045, 0.103, 0.098, 0.028,
+ 0.027, 0.06 ])
+sigma_V_AB = np.array([0.056, 0.109, 0.042, 0.009, 0.089, 0.055, 0.07 , 0.064, 0.044, 0.07 ,
+ 0.023, 0.072])
 
-phi_A = np.array([-0.079, -0.036,  0.012, -0.283, -0.024, -0.065,  0.102]) * 1e-6 # secondi
-phi_B = np.array([-3.782, -3.507, -3.469, -3.975, -3.51 , -3.377, -3.339]) * 1e-6 # secondi
-phi_AB = np.array([1246.387,  496.32 ,  246.525,  121.406,   46.495,   32.222,   21.395]) * 1e-6 # secondi
+phi_A = np.array([ 0.101,  0.012,  0.001, -0.214, -0.173,  0.084,  0.067,  0.036, -0.14 ,
+ -0.059, -0.146,  0.005]) * 1e-6 # secondi
+phi_B = np.array([-3.477, -3.389, -3.471, -3.389, -3.469, -3.63 , -3.602, -3.479, -3.133,
+ -2.889, -2.719, -2.509]) * 1e-6 # secondi
+phi_AB = np.array([1246.454,  496.209,  246.566,  121.528,   46.537,   32.262,   21.63 ,
+    9.06 ,    5.233,    3.485,    2.365,    1.778]) * 1e-6 # secondi
 
-sigma_phi_A = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
-sigma_phi_B = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
-sigma_phi_AB = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+sigma_phi_A = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+sigma_phi_B = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+sigma_phi_AB = np.array([0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2])* 1e-6 # secondi
+
 
 
 sigma_V_A = np.sqrt(sigma_V_A**2 + sigma_V_risoluzione**2)
@@ -250,6 +261,7 @@ ax[1].set_xscale ('log')
 ax[1].legend()
 ax[1].grid(True, alpha = 0.4)
 
+plt.tight_layout()
 plt.show ()
 
 # CALCOLO DELLE IMPEDENZE
@@ -314,7 +326,7 @@ ax.fill_between(x_log,
 ax.errorbar(frequenza[maschera_impedenze],
             Z_C_dati[maschera_impedenze],
             yerr=sigma_Z_C_dati[maschera_impedenze],
-            fmt="o", capsize=4, color="darkred",
+            fmt="o", capsize=4, color="navy",
             label="$Z_C$ stimata dai dati ($R \\cdot V_C / V_{R}$)")
  
 # Linea verticale sulla frequenza di taglio (media pesata dei due fit)
@@ -323,11 +335,11 @@ w_R = 1 / sigma_fc_R**2
 f_c_media = (w_C * f_c_C + w_R * f_c_R) / (w_C + w_R)
 sigma_fc_media = 1 / np.sqrt(w_C + w_R)
  
-ax.axvline(f_c_media, color="navy", lw=1.5, ls="--",
+ax.axvline(f_c_media, color="crimson", lw=1.5, ls="--",
            label=f"$f_c$ = {f_c_media:.0f} Hz")
  
 # Punto di incrocio: Z_R = Z_C  =>  f = 1/(2*pi*R*C), cioè esattamente f_c
-ax.plot(f_c_media, R_best, marker="*", markersize=9, color="gold",
+ax.plot(f_c_media, R_best, marker="*", markersize=10, color="gold",
         zorder=5, label=f"Incrocio $Z_R = Z_C$ a $f_c$")
  
 ax.set_xlabel("Frequenza (Hz)")

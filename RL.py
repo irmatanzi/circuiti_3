@@ -193,11 +193,11 @@ ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
-ax[0].errorbar(frequenza, y_L, yerr=sigma_y_L, fmt="o", capsize = 4, color="lightcoral", label="Dati osservati (induttore)")
-ax[0].plot(x_axis, H_L(x_axis, R_fit_L, L_fit_L), color="lightcoral", label="Funzione di trasferimento $H_L$")
+ax[0].errorbar(frequenza, y_L, yerr=sigma_y_L, fmt="o", capsize = 4, color="mediumseagreen", label="Dati osservati (induttore)")
+ax[0].plot(x_axis, H_L(x_axis, R_fit_L, L_fit_L), color="mediumseagreen", label="Funzione di trasferimento $H_L$")
 
-ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="mediumseagreen", label="Dati osservati (resistenza)")
-ax[0].plot(x_axis, H_R(x_axis, R_fit_R, L_fit_R), color="mediumseagreen", label="Funzione di trasferimento $H_R$")
+ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="lightblue", label="Dati osservati (resistenza)")
+ax[0].plot(x_axis, H_R(x_axis, R_fit_R, L_fit_R), color="lightblue", label="Funzione di trasferimento $H_R$")
 
 ax[0].legend()
 ax[0].grid (True, alpha = 0.4)
@@ -207,13 +207,13 @@ ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
 ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, 
-               color="lightcoral", label="Dati osservati (induttore)")
-ax[1].plot(x_axis, fase_L(x_axis, R_fit_L, L_fit_L), color="lightcoral",
+               color="mediumseagreen", label="Dati osservati (induttore)")
+ax[1].plot(x_axis, fase_L(x_axis, R_fit_L, L_fit_L), color="mediumseagreen",
            label="Fase teorica")
 
 ax[1].errorbar(frequenza, fase_A_AB, yerr=sigma_fase_A_AB, fmt="o", capsize = 4, 
-               color="mediumseagreen", label="Dati osservati (resistenza)")
-ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, L_fit_R), color="mediumseagreen",
+               color="lightblue", label="Dati osservati (resistenza)")
+ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, L_fit_R), color="lightblue",
            label="Fase teorica")
 
 ax[1].set_xlabel("Frequenza (Hz)")
@@ -231,11 +231,11 @@ ax[0].set_title ("Rapporto delle ampiezze: $V_{out} / V_{in}$")
 ax[0].set_xlabel ("Frequenza (Hz)")
 ax[0].set_ylabel("$V_{out} / V_{in}$ (V)")
 
-ax[0].errorbar(frequenza, y_L, yerr=sigma_y_L, fmt="o", capsize = 4, color="lightcoral", label="Dati osservati (induttore)")
-ax[0].plot(x_axis, H_L(x_axis, R_fit_L, L_fit_L), color="lightcoral", label="Funzione di trasferimento $H_L$")
+ax[0].errorbar(frequenza, y_L, yerr=sigma_y_L, fmt="o", capsize = 4, color="mediumseagreen", label="Dati osservati (induttore)")
+ax[0].plot(x_axis, H_L(x_axis, R_fit_L, L_fit_L), color="mediumseagreen", label="Funzione di trasferimento $H_L$")
 
-ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="mediumseagreen", label="Dati osservati (resistenza)")
-ax[0].plot(x_axis, H_R(x_axis, R_fit_R, L_fit_R), color="mediumseagreen", label="Funzione di trasferimento $H_R$")
+ax[0].errorbar(frequenza, y_R, yerr=sigma_y_R, fmt="o", capsize = 4, color="lightblue", label="Dati osservati (resistenza)")
+ax[0].plot(x_axis, H_R(x_axis, R_fit_R, L_fit_R), color="lightblue", label="Funzione di trasferimento $H_R$")
 
 ax[0].legend()
 ax[0].grid (True, alpha = 0.4)
@@ -246,13 +246,13 @@ ax[1].set_xlabel("Frequenza (Hz)")
 ax[1].set_ylabel("$\\phi_{out} - \\phi_{in}$ (rad)")
 
 ax[1].errorbar(frequenza, fase_A_B, yerr=sigma_fase_A_B, fmt="o", capsize = 4, 
-               color="lightcoral", label="Dati osservati (induttore)")
-ax[1].plot(x_axis, fase_L(x_axis, R_fit_L, L_fit_L), color="lightcoral",
+               color="mediumseagreen", label="Dati osservati (induttore)")
+ax[1].plot(x_axis, fase_L(x_axis, R_fit_L, L_fit_L), color="mediumseagreen",
            label="Fase teorica")
 
 ax[1].errorbar(frequenza, fase_A_AB, yerr=sigma_fase_A_AB, fmt="o", capsize = 4, 
-               color="mediumseagreen", label="Dati osservati (resistenza)")
-ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, L_fit_R), color="mediumseagreen",
+               color="lightblue", label="Dati osservati (resistenza)")
+ax[1].plot(x_axis, fase_R(x_axis, R_fit_R, L_fit_R), color="lightblue",
            label="Fase teorica")
 
 ax[1].set_xlabel("Frequenza (Hz)")
@@ -308,9 +308,9 @@ sigma_Z_L_dati = np.sqrt(
 # --- Plot ---
 fig_imp, ax_imp = plt.subplots(figsize=(8, 5))
 
-ax_imp.loglog(x_imp, Z_R_teorica, color="mediumseagreen", lw=2,
+ax_imp.loglog(x_imp, Z_R_teorica, color="lightblue", lw=2,
               label=f"$Z_R$ teorica (fit), $R$ = {R_best:.1f} Ohm")
-ax_imp.loglog(x_imp, Z_L_teorica, color="lightcoral", lw=2,
+ax_imp.loglog(x_imp, Z_L_teorica, color="mediumseagreen", lw=2,
               label=f"$Z_L$ teorica (fit), $L$ = {L_best:.2e} H")
 ax_imp.fill_between(x_imp,
                     Z_L_teorica - sigma_Z_L_teorica,
@@ -319,7 +319,7 @@ ax_imp.fill_between(x_imp,
                     label="Banda $\\pm 1\\sigma$ su $Z_L$")
 
 ax_imp.errorbar(frequenza, Z_L_dati, yerr=sigma_Z_L_dati,
-                fmt="o", capsize=4, color="darkred",
+                fmt="o", capsize=4, color="navy",
                 label="$Z_L$ stimata dai dati ($R \\cdot V_L / V_R$)")
 
 # Linea verticale sulla frequenza di taglio (media pesata dei due fit)
@@ -328,11 +328,11 @@ w_R = 1 / sigma_fc_R**2
 f_c_media = (w_L * f_c_L + w_R * f_c_R) / (w_L + w_R)
 sigma_fc_media = 1 / np.sqrt(w_L + w_R)
 
-ax_imp.axvline(f_c_media, color="orangered", lw=1.5, ls="--",
+ax_imp.axvline(f_c_media, color="crimson", lw=1.5, ls="--",
                label=f"$f_c$ = {f_c_media:.0f} Hz")
 
 # Punto di incrocio: Z_R = Z_L  =>  f = R/(2*pi*L), cioe' f_c
-ax_imp.plot(f_c_media, R_best, marker="*", markersize=9, color="gold",
+ax_imp.plot(f_c_media, R_best, marker="*", markersize=10, color="gold",
             zorder=5, label="Incrocio $Z_R = Z_L$ a $f_c$")
 
 ax_imp.set_xlabel("Frequenza (Hz)")
