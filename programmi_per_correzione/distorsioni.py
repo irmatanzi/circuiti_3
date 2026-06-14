@@ -289,16 +289,16 @@ def make_plot(name, data_orig, data_dist, amp_keys, phi_keys):
     n_phi = len(phi_keys)
     ncols = max(n_amp, n_phi)
     fig, axes = plt.subplots(2, ncols, figsize=(4.5*ncols, 8))
-    fig.suptitle(f"Circuito {name} — originale vs con distorsioni", fontweight="bold")
+    fig.suptitle(f"Circuito {name} — originali vs corretti", fontweight="bold")
 
     f = data_orig["frequenza"]
 
     for col, key in enumerate(amp_keys):
         ax = axes[0, col]
         ax.errorbar(f, data_orig[key], yerr=data_orig[f"sigma_{key}"],
-                    fmt="o-", color="#378ADD", lw=1.5, ms=5, capsize=3, label="Originale")
+                    fmt="o-", color="#378ADD", lw=1.5, ms=5, capsize=3, label="Corretti")
         ax.errorbar(f, data_dist[key], yerr=data_dist[f"sigma_{key}"],
-                    fmt="s--", color="#D85A30", lw=1.5, ms=5, capsize=3, label="Con distorsioni")
+                    fmt="s--", color="#D84130", lw=1.5, ms=5, capsize=3, label="Con distorsioni")
         ax.set_xscale("log")
         ax.set_xlabel("Frequenza (Hz)")
         ax.set_ylabel("Tensione (V)")
@@ -313,9 +313,9 @@ def make_plot(name, data_orig, data_dist, amp_keys, phi_keys):
     for col, key in enumerate(phi_keys):
         ax = axes[1, col]
         ax.errorbar(f, data_orig[key]*1e6, yerr=data_orig[f"sigma_{key}"]*1e6,
-                    fmt="o-", color="#378ADD", lw=1.5, ms=5, capsize=3, label="Originale")
+                    fmt="o-", color="#378ADD", lw=1.5, ms=5, capsize=3, label="Corretti")
         ax.errorbar(f, data_dist[key]*1e6, yerr=data_dist[f"sigma_{key}"]*1e6,
-                    fmt="s--", color="#D85A30", lw=1.5, ms=5, capsize=3, label="Con distorsioni")
+                    fmt="s--", color="#D84130", lw=1.5, ms=5, capsize=3, label="Con distorsioni")
         ax.set_xscale("log")
         ax.set_xlabel("Frequenza (Hz)")
         ax.set_ylabel("Sfasamento (μs)")
