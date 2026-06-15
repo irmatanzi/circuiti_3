@@ -193,6 +193,40 @@ print(f"tau = R*C = {R_fit_R*C_fit_R:.3e} s")
 print(f"f_c = 1/(2*pi*R*C) = {f_c_fit_R:.1f} ± {f_c_err_R:.1f} Hz")
 print(f"Chi quadro: {m_R.fval}, Ndof: {ndof_C}, p-value: {p_R}")
 
+
+ls_C = LeastSquares (frequenza, fase_A_B, sigma_fase_A_B, fase_C)
+ls_R = LeastSquares (frequenza, fase_A_AB, sigma_fase_A_AB, fase_R)
+
+m_C_fase = Minuit(costo_con_vincolo_R(ls_C), R=R_load, C=C_start)
+m_C_fase.errordef = Minuit.LEAST_SQUARES
+m_C_fase.limits["R"] = (1e-9, None)
+m_C_fase.limits["C"] = (1e-10, 1e-3)
+m_C_fase.migrad()
+m_C_fase.hesse()
+
+p_C_fase = chi2.sf(m_C_fase.fval, ndof_C)
+
+m_R_fase = Minuit(costo_con_vincolo_R(ls_R), R=R_load, C=C_start)
+m_R_fase.errordef = Minuit.LEAST_SQUARES
+m_R_fase.limits["R"] = (1e-9, None)
+m_R_fase.limits["C"] = (1e-10, 1e-3)
+m_R_fase.migrad()
+m_R_fase.hesse()
+
+p_R_fase = chi2.sf(m_R_fase.fval, ndof_C)
+
+print(f"\nFit sulla fase, condensatore:")
+print(m_C_fase)
+print(f"R = {m_C_fase.values['R']:.3f} ± {m_C_fase.errors['R']:.3f} Ohm")
+print(f"C = {m_C_fase.values['C']:.3e} ± {m_C_fase.errors['C']:.3e} F")
+print(f"Chi quadro: {m_C_fase.fval}, Ndof: {ndof_C}, p-value: {p_C_fase}")
+print(f"\nFit sulla fase, resistenza:")
+print(m_R_fase)
+print(f"R = {m_R_fase.values['R']:.3f} ± {m_R_fase.errors['R']:.3f} Ohm")
+print(f"C = {m_R_fase.values['C']:.3e} ± {m_R_fase.errors['C']:.3e} F")
+print(f"Chi quadro: {m_R_fase.fval}, Ndof: {ndof_C}, p-value: {p_R_fase}")
+
+
 fig, ax = plt.subplots(2, 1, sharex=True)
 x_axis = np.linspace(np.min(frequenza), np.max(frequenza), 1000)
 
