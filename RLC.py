@@ -159,6 +159,10 @@ def costo_con_vincolo_R(ls):
 ls_R = LeastSquares(frequenze, y_R, sigma_y_R, H_R)
 ls_L = LeastSquares(frequenze, y_L, sigma_y_L, H_L)
 ls_C = LeastSquares(frequenze, y_C, sigma_y_C, H_C)
+
+ls_R_fase = LeastSquares(frequenze, fase_A_R, sigma_fase_A_R, fase_R)
+ls_L_fase = LeastSquares(frequenze, fase_A_L, sigma_fase_A_L, fase_L)
+ls_C_fase = LeastSquares(frequenze, fase_A_C, sigma_fase_A_C, fase_C)
  
 def make_minuit(ls):
     m = Minuit(costo_con_vincolo_R(ls), R=R_noto, L=L_start, C=C_start)
@@ -174,10 +178,19 @@ m_R = make_minuit(ls_R)
 m_L = make_minuit(ls_L)
 m_C = make_minuit(ls_C)
 
+m_R_fase = make_minuit(ls_R_fase)
+m_L_fase = make_minuit(ls_L_fase)
+m_C_fase = make_minuit(ls_C_fase)
+
 ndof = len(frequenze) + 1 - 3  # N punti + vincolo - 3 parametri liberi
+
 p_R = chi2.sf(m_R.fval, ndof)
 p_L = chi2.sf(m_L.fval, ndof)
 p_C = chi2.sf(m_C.fval, ndof)
+
+p_R_fase = chi2.sf(m_R_fase.fval, ndof)
+p_L_fase = chi2.sf(m_L_fase.fval, ndof)
+p_C_fase = chi2.sf(m_C_fase.fval, ndof)
  
 # ─────────────────────────────────────────────
 # FREQUENZA DI RISONANZA E FATTORE DI QUALITÀ
@@ -222,7 +235,10 @@ print(f"\nR_noto = {R_noto:.3f} ± {sigma_R_noto:.3f} Ohm")
  
 for nome, m, p in [("resistenza (H_R)", m_R, p_R),
                    ("induttore  (H_L)", m_L, p_L),
-                   ("condensatore (H_C)", m_C, p_C)]:
+                   ("condensatore (H_C)", m_C, p_C),
+                   ("fase resistenza (fase_R)", m_R_fase, p_R_fase),
+                   ("fase induttore  (fase_L)", m_L_fase, p_L_fase),
+                   ("fase condensatore (fase_C)", m_C_fase, p_C_fase)]:
     R_ = m.values["R"]; sR = m.errors["R"]
     L_ = m.values["L"]; sL = m.errors["L"]
     C_ = m.values["C"]; sC = m.errors["C"]
