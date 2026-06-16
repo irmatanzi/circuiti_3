@@ -186,6 +186,40 @@ print(f"tau = L/R = {L_fit_R/R_fit_R:.3e} s")
 print(f"f_c = R/(2*pi*L) = {f_c_fit_R:.1f} ± {f_c_err_R:.1f} Hz")
 print (f"Chi quadro: {m_R.fval}, ndof: {ndof_L}, p-value: {p_R}")
 
+
+# Fit fasi
+
+m_L_fase = Minuit(costo_con_vincolo_R(ls_L), R=R_tot, L=10e-3)
+m_L_fase.errordef = Minuit.LEAST_SQUARES
+m_L_fase.limits["R"] = (1e-9, None)
+m_L_fase.limits["L"] = (1e-10, 1e-1)
+m_L_fase.migrad()
+m_L_fase.hesse()
+
+p_L_fase = chi2.sf(m_L_fase.fval, ndof_L)
+
+m_R_fase = Minuit(costo_con_vincolo_R(ls_R), R=R_tot, L=10e-3)
+m_R_fase.errordef = Minuit.LEAST_SQUARES
+m_R_fase.limits["R"] = (1e-9, None)
+m_R_fase.limits["L"] = (1e-10, 1e-1)
+m_R_fase.migrad()
+m_R_fase.hesse()
+
+p_R_fase = chi2.sf(m_R_fase.fval, ndof_L)
+
+print(f"\nFit sulla fase, induttore:")
+print(m_L_fase)
+print(f"R = {m_L_fase.values['R']:.3f} ± {m_L_fase.errors['R']:.3f} Ohm")
+print(f"L = {m_L_fase.values['L']:.3e} ± {m_L_fase.errors['L']:.3e} H")
+print (f"Chi quadro: {m_L_fase.fval}, ndof: {ndof_L}, p-value: {p_L_fase}")
+
+print(f"\nFit sulla fase, resistenza:")
+print(m_R_fase)
+print(f"R = {m_R_fase.values['R']:.3f} ± {m_R_fase.errors['R']:.3f} Ohm")
+print(f"L = {m_R_fase.values['L']:.3e} ± {m_R_fase.errors['L']:.3e} H")
+print (f"Chi quadro: {m_R_fase.fval}, ndof: {ndof_L}, p-value: {p_R_fase}")
+
+
 fig, ax = plt.subplots(2, 1, sharex=True)
 x_axis = np.linspace(np.min(frequenza), np.max(frequenza), 1000)
 
@@ -278,11 +312,23 @@ sigma_fc_L = f_c_err_L
 f_c_R = f_c_fit_R
 sigma_fc_R = f_c_err_R
 
+# frequenze di taglio dai due fit delle fasi, con propagazione da matrice di covarianza.
+f_c_fase_L = frequenza_taglio(m_L_fase.values['R'], m_L_fase.values['L'])
+sigma_fc_fase_L = errore_frequenza_taglio(m_L_fase)
+f_c_fase_R = frequenza_taglio(m_R_fase.values['R'], m_R_fase.values['L'])
+sigma_fc_fase_R = errore_frequenza_taglio(m_R_fase)
+
 print(f"\n--- Frequenze di taglio ---")
 print(f"Dal fit sull'induttore: f_c = {f_c_L:.1f} ± {sigma_fc_L:.1f} Hz")
 print(f"Dal fit sulla resistenza: f_c = {f_c_R:.1f} ± {sigma_fc_R:.1f} Hz")
 compatibilita = abs(f_c_L - f_c_R) / np.sqrt(sigma_fc_L**2 + sigma_fc_R**2)
 print(f"Compatibilità tra i due fit: {compatibilita:.2f} sigma")
+
+print(f"\n--- Frequenze di taglio dai fit delle fasi ---")
+print(f"Dal fit sull'induttore: f_c = {f_c_fase_L:.1f} ± {sigma_fc_fase_L:.1f} Hz")
+print(f"Dal fit sulla resistenza: f_c = {f_c_fase_R:.1f} ± {sigma_fc_fase_R:.1f} Hz")
+compatibilita_fase = abs(f_c_fase_L - f_c_fase_R) / np.sqrt(sigma_fc_fase_L**2 + sigma_fc_fase_R**2)
+print(f"Compatibilità tra i due fit delle fasi: {compatibilita_fase:.2f} sigma")
 
 # Asse delle frequenze esteso (log)
 x_imp = np.logspace(np.log10(np.min(frequenza) / 2), np.log10(np.max(frequenza) * 2), 2000)
