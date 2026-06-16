@@ -31,7 +31,7 @@ def fase_R(f, R, C):
 
 R_load = 3000.2 # Ohm
 # R_C ignota (multimetro in overload)
-C_start = 1e-9 # F, solo valore iniziale per il fit
+C_start = 1e-9 # F, misurato con massima risoluzione 1 nF e ± (1,2% + 2)
 
 # Incertezze di tipo B: distribuzione uniforme nell'intervallo dichiarato.
 sigma_R_load = 0.01 * R_load / np.sqrt(3) # Ohm, tolleranza produttore: +/- 1%
@@ -307,17 +307,27 @@ C_best = C_fit_C
 R_err  = R_err_C
 C_err  = C_err_C
  
-# Frequenza di taglio dai due fit, con propagazione da matrice di covarianza.
+# Frequenza di taglio dai due fit delle ampiezze, con propagazione da matrice di covarianza.
 f_c_C = f_c_fit_C
 sigma_fc_C = f_c_err_C
 f_c_R = f_c_fit_R
 sigma_fc_R = f_c_err_R
+
+# Frequenze di taglio dai due fit della fase, con propagazione da matrice di covarianza.
+f_c_C_fase = frequenza_taglio(m_C_fase.values["R"], m_C_fase.values["C"])
+sigma_fc_C_fase = errore_frequenza_taglio(m_C_fase)
+f_c_R_fase = frequenza_taglio(m_R_fase.values["R"], m_R_fase.values["C"])
+sigma_fc_R_fase = errore_frequenza_taglio(m_R_fase)
  
 print(f"\n--- Frequenze di taglio ---")
 print(f"Dal fit sul condensatore: f_c = {f_c_C:.1f} ± {sigma_fc_C:.1f} Hz")
 print(f"Dal fit sulla resistenza: f_c = {f_c_R:.1f} ± {sigma_fc_R:.1f} Hz")
 compatibilita = abs(f_c_C - f_c_R) / np.sqrt(sigma_fc_C**2 + sigma_fc_R**2)
 print(f"Compatibilità tra i due fit: {compatibilita:.2f} sigma")
+print(f"\nDal fit sulla fase, condensatore: f_c = {f_c_C_fase:.1f} ± {sigma_fc_C_fase:.1f} Hz")
+print(f"Dal fit sulla fase, resistenza: f_c = {f_c_R_fase:.1f} ± {sigma_fc_R_fase:.1f} Hz")
+compatibilita_fase = abs(f_c_C_fase - f_c_R_fase) / np.sqrt(sigma_fc_C_fase**2 + sigma_fc_R_fase**2)
+print(f"Compatibilità tra i due fit sulla fase: {compatibilita_fase:.2f} sigma")
  
 # Asse delle frequenze esteso (log) per un bel grafico
 x_log = np.logspace(np.log10(100), np.log10(50000), 2000)
