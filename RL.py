@@ -298,7 +298,7 @@ ax[1].grid (True)
 plt.show ()
 
 
-# CALCOLO DELLE IMPEDENZE
+# CALCOLO DELLE FREQUENZE DI TAGLIO E DELLE IMPRONTE DI IMPEDENZA
 
 # Usiamo i parametri dal fit sull'induttore (puoi usare anche m_R, sono compatibili)
 R_best = R_fit_L
